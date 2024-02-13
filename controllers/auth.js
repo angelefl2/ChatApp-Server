@@ -73,7 +73,7 @@ const login = async (req, res = response) => {
         // Respuesta correcta, mandamos usuario y token
         res.json({
             ok: true,
-            usuarioDB,
+            usuario,
             token
         })
 
@@ -90,7 +90,6 @@ const renewToken = async (req, res = response) => {
 
     // cogemos lo que viene en el request que se establece en el validar-jwt.js
     const uid = req.uid;
-
     // Generar JWT nuevo
     const token = await generarJwt(uid);
     // Comprueba si el uid esta en la bd y obtiene el usuario
