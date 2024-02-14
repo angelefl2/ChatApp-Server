@@ -16,6 +16,7 @@ const validarJWT = (req, res, next) => {
         const { uid } = jwt.verify(token, process.env.JWT_KEY);
         // Establecemos en la respuesta el uid del usuario para manejarlo facilmente en el front
         req.uid = uid;
+        
         // para que pase al siguiente validador y acabe la peticion
         next();
 
