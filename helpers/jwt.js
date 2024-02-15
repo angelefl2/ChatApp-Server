@@ -18,10 +18,25 @@ const generarJwt = (uid) => {
             }
         })
     });
-
 }
+
+const comprobarJwt = (token = '') => {
+
+    try {
+        // al verificar el token contra la clave secreta de env, extraemos el uid
+        const { uid } = jwt.verify(token, process.env.JWT_KEY);
+        // Establecemos en la respuesta el uid del usuario para manejarlo facilmente en el front
+        return [true, uid];
+
+
+    } catch (error) {
+        return [false, null]
+    }
+
+
+};
 
 
 module.exports = {
-    generarJwt
+    generarJwt, comprobarJwt
 }
