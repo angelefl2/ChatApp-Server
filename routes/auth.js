@@ -14,6 +14,7 @@ router.post('/new', [
     check('email', 'El correo es obligatorio').not().isEmpty().isEmail(),
     validarCampos
 ], crearUsuario)
+
 router.post('/', [
     check('email', 'El correo es obligatorio').not().isEmpty().isEmail(),
     check('password', 'El password es obligatorio').not().isEmpty(),
