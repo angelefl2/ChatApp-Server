@@ -7,3 +7,5 @@ jsonwebtoken -> Para validar contraseñas (crea tokens de contraseñas)
 nongoose -> Para trabajar con la base de datos
 
 npm install bcryptjs cors express-validator jsonwebtoken mongoose
+
+estoy en mi rama personal
