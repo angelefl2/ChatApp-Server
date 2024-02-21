@@ -1,6 +1,6 @@
 const { comprobarJwt } = require('../helpers/jwt');
 const { io } = require('../index');
-const { usuarioConectado, usuarioDesconectado } = require('../controllers/socket');
+const { usuarioConectado, usuarioDesconectado, grabarMensajeBD } = require('../controllers/socket');
 
 
 // Mensajes de Sockets
@@ -12,21 +12,28 @@ io.on('connection', async (client) => {
 
     // Cliente autenticado
     usuarioConectado(uid);
+    client.emit('welcome', "BIENVENIDO AL SERVER: " + uid);
 
+    // Cliente concreoto -> client.id
     // Ingresar al usuario a una sala en particular
-    // Sala global -> Todos los usuarios client.id
     client.join(uid)
 
     // Sala individual -> Mensaje a un usuario concreto client.uid
     //client.to(uid)
 
-    client.on('event', ( payload ) => {
-        console.log(payload); 
+
+    client.on('mensaje-personal', async (payload) => {
+        await grabarMensajeBD(payload);
+        // devuelve el mensaje a una persona en concreto segun el uid que entra si lo ha grabado en bd
+        io.to(payload.para).emit('mensaje-personal', payload);
     });
+
+
 
     client.on('disconnect', () => {
         usuarioDesconectado(uid);
     });
+
 
     // client.on('mensaje', ( payload ) => {
     //     console.log('Mensaje', payload);
