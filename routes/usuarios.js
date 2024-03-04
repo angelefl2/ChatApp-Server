@@ -8,5 +8,4 @@ const router = Router();
 
 router.get('/', validarJWT, getUsuarios);
 
-
 module.exports = router;

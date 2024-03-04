@@ -9,3 +9,9 @@ nongoose -> Para trabajar con la base de datos
 npm install bcryptjs cors express-validator jsonwebtoken mongoose
 
 estoy en mi rama de migrando a mysql
+
+
+
+// todo:_
+
+    - Eliminar paquete de mongoose y toda su integracion

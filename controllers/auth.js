@@ -1,18 +1,22 @@
 const { response } = require('express')
-const Usuario = require('../models/usuario')
+//const Usuario = require('../models/usuario')
 const bcrypt = require('bcryptjs');
 const { generarJwt } = require('../helpers/jwt');
+const Usuario = require("../models").Usuario;
 
 const crearUsuario = async (req, res = response) => {
     const { email, password } = req.body;
     try {
-        const existeEmail = await Usuario.findOne({ email }); // Comprueba si el email esta en la bd
+        //const existeEmail = await Usuario.findOne({ email }); // Comprueba si el email esta en la bd
+        const existeEmail = await Usuario.findOne({ where: { email: email } })
+        
         if (existeEmail) {
             return res.status(400).json({
                 ok: false,
                 msg: 'El correo ya está registrado.'
             });
         }
+        
 
         // Cogemos la respuesta y empezamos a validar
         const usuario = new Usuario(req.body);
@@ -29,6 +33,8 @@ const crearUsuario = async (req, res = response) => {
             token
         })
 
+        
+
     } catch (error) {
         res.status(500).json({
             ok: false,
@@ -38,10 +44,15 @@ const crearUsuario = async (req, res = response) => {
 
 
 }
+
 const login = async (req, res = response) => {
     const { email, password } = req.body;
+
     try {
-        const usuario = await Usuario.findOne({ email }); // Comprueba si el email esta en la bd
+        
+        const usuario = await Usuario.findOne({ where: { email: email } })
+
+       // const usuario = await Usuario.findOne({ email }); // Comprueba si el email esta en la bd
         if (!usuario) {
             return res.status(404).json({
                 ok: false,
@@ -71,13 +82,15 @@ const login = async (req, res = response) => {
         })
     }
 }
+
 const renewToken = async (req, res = response) => {
     // cogemos lo que viene en el request que se establece en el validar-jwt.js
     const uid = req.uid;
     // Generar JWT nuevo
     const token = await generarJwt(uid);
     // Comprueba si el uid esta en la bd y obtiene el usuario
-    const usuario = await Usuario.findById(uid);
+    const usuario = await Usuario.findOne({ where: { id: uid } })
+    
     res.json({
         ok: true,
         usuario,

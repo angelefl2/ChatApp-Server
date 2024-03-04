@@ -12,7 +12,6 @@ io.on('connection', async (client) => {
 
     // Cliente autenticado
     usuarioConectado(uid);
-    client.emit('welcome', "BIENVENIDO AL SERVER: " + uid);
 
     // Cliente concreoto -> client.id
     // Ingresar al usuario a una sala en particular
@@ -21,14 +20,11 @@ io.on('connection', async (client) => {
     // Sala individual -> Mensaje a un usuario concreto client.uid
     //client.to(uid)
 
-
     client.on('mensaje-personal', async (payload) => {
         await grabarMensajeBD(payload);
         // devuelve el mensaje a una persona en concreto segun el uid que entra si lo ha grabado en bd
         io.to(payload.para).emit('mensaje-personal', payload);
     });
-
-
 
     client.on('disconnect', () => {
         usuarioDesconectado(uid);

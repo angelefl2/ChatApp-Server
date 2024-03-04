@@ -1,32 +1,44 @@
-const { Schema, model } = require('mongoose')
+'use strict';
+const crypto = require('crypto'); // Importación de la librería crypto
+const { Model } = require('sequelize');
 
-const UsuarioSchema = Schema({
-    nombre: {
-        type: String,
-        required: true
+module.exports = (sequelize, DataTypes) => {
+  class Usuario extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  }
+
+  Usuario.init({
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
     },
-    email: {
-        unique: true,
-        type: String,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
+    nombre: DataTypes.STRING,
+    email: DataTypes.STRING,
+    password: DataTypes.STRING,
     online: {
-        type: Boolean,
-        default: false
+      type: DataTypes.BOOLEAN,
+      defaultValue : false
     },
+  }, {
+    sequelize,
+    modelName: 'Usuario',
+  });
 
-});
+  // Hook para generar un ID único antes de crear un nuevo usuario
+  Usuario.beforeCreate((usuario, options) => {
+    // Generar un hash único utilizando el correo electrónico y una semilla aleatoria
+    const uniqueId = crypto.createHash('sha256')
+      .update(usuario.email + Math.random().toString())
+      .digest('hex');
+    usuario.id = uniqueId;
+  });
 
-// Sobrescritura del metodo toJson para que cuando se serialee un Usuario se mande todo  menos __v y password. _id, se modifica por uid
-UsuarioSchema.method('toJSON', function () {
-    const { __v, _id, password, ...object } = this.toObject();
-    object.uid = _id;
-    return object;
-})
-
-
-module.exports = model('Usuario', UsuarioSchema);
+  return Usuario;
+};
